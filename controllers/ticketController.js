@@ -4,10 +4,9 @@ const { sendEmailNotification } = require('../notifications/email');
 const { sendWebSocketNotification } = require('../notifications/websocket');
 
 const createTicket = async (req, res) => {
-  console.log('hi from createTicket');
-  const { title, description, assignedTo } = req.body;
-
   try {
+    const { title, description, assignedTo } = req.body;
+
     const ticket = await Ticket.create({
       title,
       description,
@@ -15,12 +14,8 @@ const createTicket = async (req, res) => {
       assignedTo,
     });
 
-    console.log('Ticket created:', ticket);
-
     if (assignedTo) {
       const user = await User.findById(assignedTo);
-
-      console.log('Assigned user found:', user);
 
       sendEmailNotification(
         user.email,
@@ -36,10 +31,11 @@ const createTicket = async (req, res) => {
 
     res.status(201).json(ticket);
   } catch (error) {
-    console.error('Error creating ticket:', error);
-    res
-      .status(400)
-      .json({ message: 'Failed to create ticket', error: error.message });
+    next({
+      log: `Error in authController.authUser${error}`,
+      status: 500,
+      message: { error: 'Internal Server Error' },
+    });
   }
 };
 

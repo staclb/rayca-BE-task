@@ -36,11 +36,10 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Error caught in global handler',
     status: 500,
-    message: { err: 'An error occurred' },
+    message: { err: 'An unknown error occurred' },
   };
   const errorObj = { ...defaultErr, ...err };
-  console.log(errorObj.log);
-  console.log(err);
+  console.log(errorObj.log, errorObj);
   return res.status(errorObj.status).json(errorObj.message);
 });
 
@@ -51,7 +50,7 @@ const server = app.listen(PORT, () => {
 
 server.on('upgrade', (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, ws => {
-    ws.userId = request.headers['user-id']; // Assume user-id is sent in headers for simplicity
+    ws.userId = request.headers['user-id']; // user-id is sent in headers
     wss.emit('connection', ws, request);
   });
 });
