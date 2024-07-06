@@ -64,15 +64,19 @@ const updateTicket = async (req, res) => {
 };
 
 const deleteTicket = async (req, res) => {
-  const { id } = req.params;
-  const ticket = await Ticket.findById(id);
+  try {
+    const { id } = req.params;
+    const ticket = await Ticket.findById(id);
 
-  if (!ticket) {
-    return res.status(404).json({ message: 'Ticket not found' });
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    await Ticket.deleteOne({ _id: id }); // Use deleteOne instead of remove
+    res.json({ message: 'Ticket deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
-
-  await ticket.remove();
-  res.json({ message: 'Ticket removed' });
 };
 
 const getTickets = async (req, res) => {
@@ -83,4 +87,23 @@ const getTickets = async (req, res) => {
   res.json(tickets);
 };
 
-module.exports = { createTicket, updateTicket, deleteTicket, getTickets };
+const getTicketById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const ticket = await Ticket.findById(id).populate('createdBy assignedTo');
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(200).json(ticket);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = {
+  createTicket,
+  updateTicket,
+  deleteTicket,
+  getTickets,
+  getTicketById,
+};
