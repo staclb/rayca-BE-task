@@ -15,6 +15,76 @@ const swaggerOptions = {
       },
     ],
     components: {
+      schemas: {
+        User: {
+          type: 'object',
+          required: ['name', 'email', 'password'],
+          properties: {
+            id: {
+              type: 'string',
+              description: 'The auto-generated id of the user',
+            },
+            name: {
+              type: 'string',
+              description: 'The name of the user',
+            },
+            email: {
+              type: 'string',
+              description: 'The email of the user',
+            },
+            password: {
+              type: 'string',
+              description: 'The password of the user',
+            },
+            role: {
+              type: 'string',
+              description: 'The role of the user',
+              enum: ['customer', 'support', 'admin'],
+            },
+          },
+        },
+        Ticket: {
+          type: 'object',
+          required: ['title', 'description'],
+          properties: {
+            id: {
+              type: 'string',
+              description: 'The auto-generated id of the ticket',
+            },
+            title: {
+              type: 'string',
+              description: 'The title of the ticket',
+            },
+            description: {
+              type: 'string',
+              description: 'The description of the ticket',
+            },
+            status: {
+              type: 'string',
+              description: 'The status of the ticket',
+              enum: ['open', 'in_progress', 'closed'],
+            },
+            assignedTo: {
+              type: 'string',
+              description: 'The user assigned to the ticket',
+            },
+            createdBy: {
+              type: 'string',
+              description: 'The user who created the ticket',
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'The date and time when the ticket was created',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'The date and time when the ticket was last updated',
+            },
+          },
+        },
+      },
       securitySchemes: {
         bearerAuth: {
           type: 'http',

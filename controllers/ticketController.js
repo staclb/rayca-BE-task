@@ -1,12 +1,13 @@
 const Ticket = require('../models/Ticket');
 const User = require('../models/User');
-const { sendEmailNotification } = require('../notifications/email');
-const { sendWebSocketNotification } = require('../notifications/websocket');
+const {
+  notifyTicketAssignment,
+  notifyTicketStatusChange,
+} = require('../notifications/email');
 
-const createTicket = async (req, res) => {
+const createTicket = async (req, res, next) => {
   try {
     const { title, description, assignedTo } = req.body;
-
     const ticket = await Ticket.create({
       title,
       description,
@@ -16,19 +17,10 @@ const createTicket = async (req, res) => {
 
     if (assignedTo) {
       const user = await User.findById(assignedTo);
-
-      sendEmailNotification(
-        user.email,
-        'New Ticket Assigned',
-        `You have been assigned a new ticket: ${title}`,
-      );
-      sendWebSocketNotification(
-        user._id,
-        'New Ticket Assigned',
-        `You have been assigned a new ticket: ${title}`,
-      );
+      if (user) {
+        notifyTicketAssignment(user.email, title);
+      }
     }
-
     res.status(201).json(ticket);
   } catch (error) {
     next({
@@ -39,16 +31,18 @@ const createTicket = async (req, res) => {
   }
 };
 
-const updateTicket = async (req, res) => {
+const updateTicket = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, description, status, assignedTo } = req.body;
 
-    const ticket = await Ticket.findById(id);
+    const ticket = await Ticket.findById(id).populate('createdBy', '-password');
 
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
+
+    const originalStatus = ticket.status;
 
     ticket.title = title || ticket.title;
     ticket.description = description || ticket.description;
@@ -56,6 +50,20 @@ const updateTicket = async (req, res) => {
     ticket.assignedTo = assignedTo || ticket.assignedTo;
 
     await ticket.save();
+
+    if (assignedTo) {
+      const user = await User.findById(assignedTo);
+
+      if (user) {
+        notifyTicketAssignment(user.email, title);
+      }
+    }
+    if (status && status !== originalStatus) {
+      const creator = await User.findById(ticket.createdBy._id);
+      if (creator) {
+        notifyTicketStatusChange(ticket.createdBy.email, title, status);
+      }
+    }
 
     res.json(ticket);
   } catch (error) {
@@ -67,7 +75,7 @@ const updateTicket = async (req, res) => {
   }
 };
 
-const deleteTicket = async (req, res) => {
+const deleteTicket = async (req, res, next) => {
   try {
     const { id } = req.params;
     const ticket = await Ticket.findById(id);
@@ -87,7 +95,7 @@ const deleteTicket = async (req, res) => {
   }
 };
 
-const getTickets = async (req, res) => {
+const getTickets = async (req, res, next) => {
   try {
     const tickets = await Ticket.find({}).populate(
       'createdBy assignedTo',
@@ -103,7 +111,7 @@ const getTickets = async (req, res) => {
   }
 };
 
-const getTicketById = async (req, res) => {
+const getTicketById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const ticket = await Ticket.findById(id).populate('createdBy assignedTo');

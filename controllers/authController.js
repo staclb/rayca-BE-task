@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const generateToken = require('../config/jwt');
 
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
     const userExists = await User.findOne({ email });
@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const authUser = async (req, res) => {
+const authUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });

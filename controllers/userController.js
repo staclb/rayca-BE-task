@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({}).select('-password');
     res.json(users);
@@ -13,7 +13,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-const updateUserRole = async (req, res) => {
+const updateUserRole = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { role } = req.body;
