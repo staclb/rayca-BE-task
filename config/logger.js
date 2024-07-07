@@ -23,6 +23,17 @@ if (process.env.NODE_ENV !== 'production') {
       format: format.combine(format.colorize(), format.simple()),
     }),
   );
+} else {
+  logger.add(
+    new transports.Console({
+      format: format.combine(
+        format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss',
+        }),
+        format.json(),
+      ),
+    }),
+  );
 }
 
 module.exports = logger;
