@@ -17,6 +17,8 @@ const sendEmailNotification = (to, subject, text) => {
     text,
   };
 
+  logger.info('Sending email:', mailOptions);
+
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       logger.error('Error sending email: %o', error);
