@@ -1,11 +1,6 @@
 .env
-
 package-lock.json
-
 node_modules
-
 notes.txt
-
 combined.log
-
 error.log
