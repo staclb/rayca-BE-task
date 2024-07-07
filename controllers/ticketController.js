@@ -32,7 +32,7 @@ const createTicket = async (req, res) => {
     res.status(201).json(ticket);
   } catch (error) {
     next({
-      log: `Error in authController.authUser${error}`,
+      log: `Error in ticketController.createTicket: ${error}`,
       status: 500,
       message: { error: 'Internal Server Error' },
     });
@@ -40,23 +40,31 @@ const createTicket = async (req, res) => {
 };
 
 const updateTicket = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, status, assignedTo } = req.body;
+  try {
+    const { id } = req.params;
+    const { title, description, status, assignedTo } = req.body;
 
-  const ticket = await Ticket.findById(id);
+    const ticket = await Ticket.findById(id);
 
-  if (!ticket) {
-    return res.status(404).json({ message: 'Ticket not found' });
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    ticket.title = title || ticket.title;
+    ticket.description = description || ticket.description;
+    ticket.status = status || ticket.status;
+    ticket.assignedTo = assignedTo || ticket.assignedTo;
+
+    await ticket.save();
+
+    res.json(ticket);
+  } catch (error) {
+    next({
+      log: `Error in ticketController.updateTicket: ${error}`,
+      status: 500,
+      message: { error: 'Internal Server Error' },
+    });
   }
-
-  ticket.title = title || ticket.title;
-  ticket.description = description || ticket.description;
-  ticket.status = status || ticket.status;
-  ticket.assignedTo = assignedTo || ticket.assignedTo;
-
-  await ticket.save();
-
-  res.json(ticket);
 };
 
 const deleteTicket = async (req, res) => {
@@ -71,28 +79,44 @@ const deleteTicket = async (req, res) => {
     await Ticket.deleteOne({ _id: id }); // Use deleteOne instead of remove
     res.json({ message: 'Ticket deleted' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    next({
+      log: `Error in ticketController.deleteTicket: ${error}`,
+      status: 500,
+      message: { error: 'Internal Server Error' },
+    });
   }
 };
 
 const getTickets = async (req, res) => {
-  const tickets = await Ticket.find({}).populate(
-    'createdBy assignedTo',
-    'name email role',
-  );
-  res.json(tickets);
+  try {
+    const tickets = await Ticket.find({}).populate(
+      'createdBy assignedTo',
+      'name email role',
+    );
+    res.json(tickets);
+  } catch (error) {
+    next({
+      log: `Error in ticketController.getTickets: ${error}`,
+      status: 500,
+      message: { error: 'Internal Server Error' },
+    });
+  }
 };
 
 const getTicketById = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const ticket = await Ticket.findById(id).populate('createdBy assignedTo');
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
     res.status(200).json(ticket);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    next({
+      log: `Error in ticketController.getTicketById: ${error}`,
+      status: 500,
+      message: { error: 'Internal Server Error' },
+    });
   }
 };
 

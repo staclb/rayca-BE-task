@@ -6,7 +6,7 @@ const getUsers = async (req, res) => {
     res.json(users);
   } catch (error) {
     next({
-      log: `Error in userController.getUsers${error.message}`,
+      log: `Error in userController.getUsers: ${error.message}`,
       status: 500,
       message: { error: 'Internal Server Error' },
     });
@@ -30,7 +30,7 @@ const updateUserRole = async (req, res) => {
     res.json(user);
   } catch (error) {
     next({
-      log: `Error in userController.updateUserRole${error.message}`,
+      log: `Error in userController.updateUserRole: ${error.message}`,
       status: 500,
       message: { error: 'Internal Server Error' },
     });

@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
     }
   } catch (error) {
     next({
-      log: `Error in authController.registerUser${error.message}`,
+      log: `Error in authController.registerUser: ${error.message}`,
       status: 500,
       message: { error: 'Internal Server Error' },
     });
@@ -50,7 +50,7 @@ const authUser = async (req, res) => {
     }
   } catch (error) {
     next({
-      log: `Error in authController.authUser${error}`,
+      log: `Error in authController.authUser: ${error}`,
       status: 500,
       message: { error: 'Internal Server Error' },
     });
