@@ -32,22 +32,28 @@ const notifyTicketAssignment = (userEmail, ticketTitle, ticketDescription) => {
   const subject = 'New Ticket Assigned';
   const text = `You have been assigned a new ticket: 
 
-Title: ${ticketTitle}
-Description: ${ticketDescription}
-  
-Please log in to the system to view more details.`;
+  Title: ${ticketTitle}
+  Description: ${ticketDescription}`;
+
   sendEmailNotification(userEmail, subject, text);
 };
 
-const notifyTicketStatusChange = (userEmail, ticketTitle, ticketStatus) => {
+const notifyTicketStatusChange = (
+  userEmail,
+  ticketTitle,
+  ticketStatus,
+  ticketDescription,
+) => {
   const subject = 'Ticket Status Updated';
   const text = `The status of the ticket "${ticketTitle}" has been updated to: ${ticketStatus}
   
-Please log in to the system to view more details.`;
+  Description: ${ticketDescription}`;
+
   sendEmailNotification(userEmail, subject, text);
 };
 
 module.exports = {
   notifyTicketAssignment,
   notifyTicketStatusChange,
+  sendEmailNotification,
 };

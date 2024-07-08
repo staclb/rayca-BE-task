@@ -8,6 +8,7 @@ const ticketRoutes = require('./routes/tickets');
 const userRoutes = require('./routes/users');
 const swaggerDocs = require('./docs/swagger');
 const logger = require('./config/logger');
+const messageRoutes = require('./routes/message');
 
 // Connect to DB
 connectDB();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/message', messageRoutes);
 
 // swagger
 swaggerDocs(app);

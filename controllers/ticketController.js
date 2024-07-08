@@ -15,10 +15,12 @@ const createTicket = async (req, res, next) => {
       assignedTo,
     });
 
+    console.log('ticket: ', ticket);
+
     if (assignedTo) {
       const user = await User.findById(assignedTo);
       if (user) {
-        notifyTicketAssignment(user.email, title);
+        notifyTicketAssignment(user.email, title, description);
       }
     }
     res.status(201).json(ticket);
@@ -62,7 +64,12 @@ const updateTicket = async (req, res, next) => {
     if (status && status !== originalStatus) {
       const creator = await User.findById(ticket.createdBy._id);
       if (creator) {
-        notifyTicketStatusChange(creator.email, ticket.title, ticket.status);
+        notifyTicketStatusChange(
+          creator.email,
+          ticket.title,
+          ticket.status,
+          ticket.description,
+        );
       }
     }
 
