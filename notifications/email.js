@@ -21,22 +21,29 @@ const sendEmailNotification = (to, subject, text) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      logger.error('Error sending email: %o', error);
+      logger.error('Error sending email: ', error);
     } else {
-      logger.info('Email sent: %s', info.response);
+      logger.info('Email sent: ', info.response);
     }
   });
 };
 
 const notifyTicketAssignment = (userEmail, ticketTitle) => {
   const subject = 'New Ticket Assigned';
-  const text = `You have been assigned a new ticket: ${ticketTitle}`;
+  const text = `You have been assigned a new ticket: 
+
+Title: ${ticketTitle}
+Description: ${ticketDescription}
+  
+Please log in to the system to view more details.`;
   sendEmailNotification(userEmail, subject, text);
 };
 
 const notifyTicketStatusChange = (userEmail, ticketTitle, status) => {
   const subject = 'Ticket Status Updated';
-  const text = `The status of your ticket "${ticketTitle}" has been updated to: ${status}`;
+  const text = `The status of the ticket "${ticketTitle}" has been updated to: ${ticketStatus}
+  
+Please log in to the system to view more details.`;
   sendEmailNotification(userEmail, subject, text);
 };
 
