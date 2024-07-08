@@ -43,6 +43,7 @@ const updateTicket = async (req, res, next) => {
     }
 
     const originalStatus = ticket.status;
+    const originalAssignedTo = ticket.assignedTo;
 
     ticket.title = title || ticket.title;
     ticket.description = description || ticket.description;
@@ -51,13 +52,13 @@ const updateTicket = async (req, res, next) => {
 
     await ticket.save();
 
-    if (assignedTo) {
+    if (assignedTo && assignedTo.toString() !== originalAssignedTo.toString()) {
       const user = await User.findById(assignedTo);
-
       if (user) {
         notifyTicketAssignment(user.email, ticket.title, ticket.description);
       }
     }
+
     if (status && status !== originalStatus) {
       const creator = await User.findById(ticket.createdBy._id);
       if (creator) {
