@@ -15,8 +15,6 @@ const createTicket = async (req, res, next) => {
       assignedTo,
     });
 
-    console.log('ticket: ', ticket);
-
     if (assignedTo) {
       const user = await User.findById(assignedTo);
       if (user) {
