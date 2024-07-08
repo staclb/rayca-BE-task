@@ -28,7 +28,7 @@ const sendEmailNotification = (to, subject, text) => {
   });
 };
 
-const notifyTicketAssignment = (userEmail, ticketTitle) => {
+const notifyTicketAssignment = (userEmail, ticketTitle, ticketDescription) => {
   const subject = 'New Ticket Assigned';
   const text = `You have been assigned a new ticket: 
 
@@ -39,7 +39,7 @@ Please log in to the system to view more details.`;
   sendEmailNotification(userEmail, subject, text);
 };
 
-const notifyTicketStatusChange = (userEmail, ticketTitle, status) => {
+const notifyTicketStatusChange = (userEmail, ticketTitle, ticketStatus) => {
   const subject = 'Ticket Status Updated';
   const text = `The status of the ticket "${ticketTitle}" has been updated to: ${ticketStatus}
   
