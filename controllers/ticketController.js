@@ -55,7 +55,7 @@ const updateTicket = async (req, res, next) => {
       const user = await User.findById(assignedTo);
 
       if (user) {
-        notifyTicketAssignment(user.email, ticket.title, ticket.status);
+        notifyTicketAssignment(user.email, ticket.title, ticket.description);
       }
     }
     if (status && status !== originalStatus) {
