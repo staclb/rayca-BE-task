@@ -13,6 +13,9 @@ const swaggerOptions = {
       {
         url: `http://localhost:${process.env.PORT}`,
       },
+      {
+        url: `https://lit-badlands-64222-22d8faa20e9d.herokuapp.com`,
+      },
     ],
     components: {
       schemas: {

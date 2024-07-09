@@ -7,8 +7,6 @@ const sendMessage = async (req, res, next) => {
     const { ticketId, message } = req.body;
     const senderId = req.user._id;
 
-    console.log(senderId);
-
     const newMessage = await Message.create({
       ticket: ticketId,
       sender: senderId,
